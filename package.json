@@ -1,0 +1,44 @@
+{
+  "name": "gokcecotton-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "lint": "eslint src/**/*.js",
+    "start": "node ./src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "keywords": [],
+  "author": "HooksSoftwareSolutions",
+  "license": "ISC",
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "eslint": "^9.39.2",
+    "globals": "^16.5.0",
+    "nodemon": "^3.1.11"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "handlebars": "^4.7.8",
+    "http-errors": "^2.0.1",
+    "joi": "^18.0.2",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.1.1",
+    "multer": "^2.0.2",
+    "nodemailer": "^7.0.12"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Memory-Orbs/backend.git"
+  },
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Memory-Orbs/backend/issues"
+  },
+  "homepage": "https://github.com/Memory-Orbs/backend#readme",
+  "type": "module"
+}
