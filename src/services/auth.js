@@ -17,7 +17,7 @@ export const registerUser = async (payload) => {
   const user = await UsersCollection.findOne({ email: payload.email });
   if (user) throw createHttpError(409, 'Email in use');
 
-  const encryptedPassword = await bcrypt.hash(payload.password, 6);
+  const encryptedPassword = await bcrypt.hash(payload.password, 10);
 
   return await UsersCollection.create({
     ...payload,
@@ -148,7 +148,7 @@ export const resetPassword = async (payload) => {
     throw createHttpError(404, 'User not found');
   }
 
-  const encryptedPassword = await bcrypt.hash(payload.password, 6);
+  const encryptedPassword = await bcrypt.hash(payload.password, 10);
 
   await UsersCollection.updateOne(
     { _id: user._id },
