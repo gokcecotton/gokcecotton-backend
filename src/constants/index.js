@@ -45,3 +45,17 @@ export const VALIDATION_RULES = {
   PRODUCT_DESCRIPTION: { MIN: 10 },
   PRODUCT_BRAND: { MAX: 50 },
 };
+
+export const ORDER_STATUS = {
+  PENDING: 'Pending',
+  PROCESSING: 'Processing',
+  SHIPPED: 'Shipped',
+  DELIVERED: 'Delivered',
+  CANCELLED: 'Cancelled',
+};
+
+export const PAYMENT_METHODS = {
+  CREDIT_CARD: 'Credit Card',
+  COD: 'Cash on Delivery',
+  BANK_TRANSFER: 'Bank Transfer',
+};

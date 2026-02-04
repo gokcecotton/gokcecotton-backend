@@ -10,9 +10,16 @@ export const errorHandler = (err, req, res, next) => {
     return;
   }
 
+  // Log the error using Pino attached to req
+  if (req.log) {
+    req.log.error(err);
+  } else {
+    console.error(err);
+  }
+
   res.status(500).json({
     status: 500,
     message: 'Something went wrong',
-    data: err.message,
+    data: process.env.NODE_ENV === 'development' ? err.message : 'Internal Server Error',
   });
 };
