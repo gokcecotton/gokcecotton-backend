@@ -31,3 +31,8 @@ export const PAGINATION_DEFAULTS = {
   SORT_BY: '_id',
   SORT_ORDER: 'asc',
 };
+
+export const CART_DEFAULTS = {
+  MIN_QUANTITY: 1,
+  DEFAULT_QUANTITY: 1,
+};
