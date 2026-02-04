@@ -17,3 +17,17 @@ export const SMTP = {
 };
 export const TEMPLATES_DIR = path.join(process.cwd(), 'src', 'templates');
 export const TEMP_UPLOAD_DIR = path.join(process.cwd(), 'temp');
+
+export const UPLOAD_LIMITS = {
+  FILE_SIZE: 5 * 1024 * 1024, // 5MB
+  MAX_COUNT: 5,
+};
+
+export const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+
+export const PAGINATION_DEFAULTS = {
+  PAGE: 1,
+  PER_PAGE: 10,
+  SORT_BY: '_id',
+  SORT_ORDER: 'asc',
+};
