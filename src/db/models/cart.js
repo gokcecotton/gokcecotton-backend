@@ -1,5 +1,5 @@
 import { model, Schema } from 'mongoose';
-import { CART_DEFAULTS } from '../constants/index.js';
+import { CART_DEFAULTS } from '../../constants/index.js';
 
 const cartSchema = new Schema(
     {
