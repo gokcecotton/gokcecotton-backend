@@ -61,7 +61,30 @@ export const createProductController = async (req, res) => {
 
 export const updateProductController = async (req, res) => {
     const { productId } = req.params;
-    const result = await updateProduct(productId, req.body);
+    let images = req.body.images;
+
+    // Eğer images bir string olarak gelmişse (tek görsel veya hatalı format), diziye çevir
+    if (images && !Array.isArray(images)) {
+        images = [images];
+    }
+
+    // Eğer images hiç gelmemişse boş dizi yap (varsayılan)
+    if (!images) {
+        images = [];
+    }
+
+    // Yeni dosyalar yüklenmişse Cloudinary'ye gönder ve listeye ekle
+    if (req.files && Array.isArray(req.files)) {
+        for (const file of req.files) {
+            const url = await saveFileToCloudinary(file);
+            images.push(url);
+        }
+    }
+
+    const result = await updateProduct(productId, {
+        ...req.body,
+        images: images.length > 0 ? images : undefined,
+    });
 
     res.json({
         status: 200,

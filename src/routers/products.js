@@ -35,6 +35,7 @@ productsRouter.patch(
     authenticate,
     isValidId,
     checkRoles('admin'),
+    upload.array('images', UPLOAD_LIMITS.MAX_COUNT),
     validateBody(updateProductSchema),
     ctrlWrapper(updateProductController),
 );
