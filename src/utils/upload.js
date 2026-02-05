@@ -8,6 +8,7 @@ import createHttpError from 'http-errors';
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
+        console.log('Multer destination:', TEMP_UPLOAD_DIR);
         cb(null, TEMP_UPLOAD_DIR);
     },
     filename: function (req, file, cb) {
@@ -21,12 +22,14 @@ const limits = {
 };
 
 const fileFilter = (req, file, cb) => {
+    console.log('Multer fileFilter:', file.mimetype || file.mimeType);
     if (
         ALLOWED_MIME_TYPES.includes(file.mimeType) ||
         ALLOWED_MIME_TYPES.includes(file.mimetype)
     ) {
         cb(null, true);
     } else {
+        console.error('Unsupported file type:', file.mimetype || file.mimeType);
         cb(createHttpError(400, 'Unsupported file type'), false);
     }
 };

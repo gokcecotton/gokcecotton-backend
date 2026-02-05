@@ -1,6 +1,11 @@
 import { HttpError } from 'http-errors';
 
 export const errorHandler = (err, req, res, next) => {
+  // Always log the full error to console for debugging
+  console.error('--- ERROR START ---');
+  console.error(err);
+  console.error('--- ERROR END ---');
+
   if (err instanceof HttpError) {
     res.status(err.status).json({
       status: err.status,
@@ -10,16 +15,10 @@ export const errorHandler = (err, req, res, next) => {
     return;
   }
 
-  // Log the error using Pino attached to req
-  if (req.log) {
-    req.log.error(err);
-  } else {
-    console.error(err);
-  }
-
   res.status(500).json({
     status: 500,
     message: 'Something went wrong',
-    data: process.env.NODE_ENV === 'development' ? err.message : 'Internal Server Error',
+    data: err.message || 'Internal Server Error',
+    stack: process.env.NODE_ENV !== 'production' ? err.stack : undefined,
   });
 };
