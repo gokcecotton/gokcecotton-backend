@@ -55,6 +55,7 @@ export const loginUserController = async (req, res) => {
         _id: user._id,
         name: user.name,
         email: user.email,
+        role: user.role,
       },
       accessToken: session.accessToken,
     },
@@ -96,10 +97,18 @@ export const refreshUserSessionController = async (req, res) => {
     // Yeni cookie’leri ayarla
     setupSession(res, session);
 
+    const user = await UsersCollection.findById(session.userId);
+
     res.json({
       status: 200,
       message: 'Successfully refreshed session!',
       data: {
+        user: {
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        },
         accessToken: session.accessToken,
       },
     });
