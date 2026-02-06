@@ -25,4 +25,15 @@ export const updateUserSchema = Joi.object({
   password: Joi.string().min(6),
   gender: Joi.string(),
   birthDate: Joi.date().iso().optional(),
+  telephone: Joi.string(),
+  addresses: Joi.array().items(
+    Joi.object({
+      title: Joi.string().required(),
+      city: Joi.string().required(),
+      district: Joi.string().required(),
+      address: Joi.string().required(),
+      telephone: Joi.string().required(),
+      _id: Joi.any(),
+    })
+  ),
 });
