@@ -1,11 +1,14 @@
-import { registerUser } from '../services/auth.js';
-import { loginUser } from '../services/auth.js';
-import { ONE_MONTH } from '../constants/index.js';
-import { logoutUser } from '../services/auth.js';
-import { refreshUsersSession } from '../services/auth.js';
-import { requestResetToken } from '../services/auth.js';
-import { resetPassword } from '../services/auth.js';
+import {
+  registerUser,
+  loginUser,
+  logoutUser,
+  refreshUsersSession,
+  requestResetToken,
+  resetPassword,
+  updateUser,
+} from '../services/auth.js';
 import { UsersCollection } from '../db/models/user.js';
+import { ONE_MONTH } from '../constants/index.js';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -97,7 +100,7 @@ export const refreshUserSessionController = async (req, res) => {
 
     const session = await refreshUsersSession({ sessionId, refreshToken });
 
-    // Yeni cookie’leri ayarla
+    // Yeni cookie’lerini ayarla
     setupSession(res, session);
 
     const user = await UsersCollection.findById(session.userId);
@@ -146,26 +149,17 @@ export const resetPasswordController = async (req, res) => {
     data: {},
   });
 };
-//update user
+
+// 🧩 UPDATE USER
 export const updateUserController = async (req, res) => {
   const userId = req.params.id;
   const updateData = req.body;
-  const updatedUser = await UsersCollection.findByIdAndUpdate(
-    userId,
-    updateData,
-    { new: true },
-  );
 
-  if (!updatedUser) {
-    return res.status(404).json({
-      status: 404,
-      message: 'User not found',
-      data: {},
-    });
-  }
+  const result = await updateUser(userId, updateData);
+
   res.json({
     status: 200,
     message: 'User successfully updated!',
-    data: updatedUser,
+    data: result.value || result,
   });
 };

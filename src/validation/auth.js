@@ -21,6 +21,7 @@ export const resetPasswordSchema = Joi.object({
 export const updateUserSchema = Joi.object({
   name: Joi.string().min(3).max(30),
   surname: Joi.string().min(3).max(30),
+  currentPassword: Joi.string().min(6),
   password: Joi.string().min(6),
   gender: Joi.string(),
   birthDate: Joi.date().iso().optional(),

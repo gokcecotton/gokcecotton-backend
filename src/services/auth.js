@@ -157,14 +157,36 @@ export const resetPassword = async (payload) => {
 };
 
 export const updateUser = async (userId, updateData, options = {}) => {
+  const user = await UsersCollection.findById(userId);
+  if (!user) {
+    throw createHttpError(404, 'User not found');
+  }
+
+  // Eğer şifre güncellenmek isteniyorsa
+  if (updateData.password) {
+    if (!updateData.currentPassword) {
+      throw createHttpError(400, 'Current password is required');
+    }
+
+    const isCurrentPasswordCorrect = await bcrypt.compare(
+      updateData.currentPassword,
+      user.password,
+    );
+
+    if (!isCurrentPasswordCorrect) {
+      throw createHttpError(401, 'Invalid current password');
+    }
+
+    updateData.password = await bcrypt.hash(updateData.password, 10);
+    // currentPassword alanını DB'ye kaydetmemek için siliyoruz
+    delete updateData.currentPassword;
+  }
+
   const updatedUser = await UsersCollection.findByIdAndUpdate(
     { _id: userId },
     updateData,
     { new: true, includeResultMetadata: true, ...options },
   );
 
-  if (!updatedUser) {
-    throw createHttpError(404, 'User not found');
-  }
   return updatedUser;
 };
