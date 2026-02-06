@@ -8,7 +8,13 @@ const usersSchema = new Schema(
     password: { type: String, required: true },
     role: { type: String, enum: ['user', 'admin'], default: 'user' },
     telephone: { type: String },
-    address: { type: String },
+    addresses: [{
+      title: { type: String, required: true },
+      city: { type: String, required: true },
+      district: { type: String, required: true },
+      address: { type: String, required: true },
+      telephone: { type: String, required: true }
+    }],
   },
   { timestamps: true, versionKey: false },
 );
