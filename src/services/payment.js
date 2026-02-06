@@ -2,6 +2,7 @@ import iyzico from '../utils/iyzico.js';
 import { OrdersCollection } from '../db/models/order.js';
 import createHttpError from 'http-errors';
 import { env } from '../utils/env.js';
+import { sendOrderSuccessEmails } from './mailService.js';
 
 export const startPaymentProcess = async (order, user, ip) => {
     const request = {
@@ -95,6 +96,12 @@ export const verifyPayment = async (token) => {
             order.paymentStatus = 'Success';
             order.iyzicoPaymentId = result.paymentId;
             await order.save();
+
+            // Send Emails (Best effort, don't await blocking response if speed needed, but here usually fine)
+            // Using setImmediate or not awaiting to prevent blocking response? 
+            // For safety and to keep response fast, we can not await it, or handle it in background.
+            // But usually Node handles async well. Let's just call it without awaiting to return response faster.
+            sendOrderSuccessEmails(order._id);
 
             resolve({ success: true, orderId: order._id });
         });

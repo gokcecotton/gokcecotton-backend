@@ -4,6 +4,7 @@ import { CartsCollection } from '../db/models/cart.js';
 import { ProductsCollection } from '../db/models/product.js';
 import { PAYMENT_METHODS } from '../constants/index.js';
 import createHttpError from 'http-errors';
+import { sendOrderSuccessEmails } from './mailService.js';
 
 export const createOrder = async (userId, payload) => {
     // 1. Get the user's cart
@@ -84,6 +85,9 @@ export const createOrder = async (userId, payload) => {
     // 7. Clear Cart (for non-CC)
     cart.items = [];
     await cart.save();
+
+    // Send emails for non-CC orders (e.g. cash on delivery if implemented later)
+    sendOrderSuccessEmails(order._id);
 
     return { order };
 };
