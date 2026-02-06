@@ -54,8 +54,11 @@ export const loginUserController = async (req, res) => {
       user: {
         _id: user._id,
         name: user.name,
+        surname: user.surname,
         email: user.email,
         role: user.role,
+        telephone: user.telephone,
+        address: user.address,
       },
       accessToken: session.accessToken,
     },
@@ -106,8 +109,11 @@ export const refreshUserSessionController = async (req, res) => {
         user: {
           _id: user._id,
           name: user.name,
+          surname: user.surname,
           email: user.email,
           role: user.role,
+          telephone: user.telephone,
+          address: user.address,
         },
         accessToken: session.accessToken,
       },
