@@ -9,7 +9,6 @@ cloudinary.config({
 });
 
 export const saveFileToCloudinary = async (file) => {
-    console.log('Uploading to Cloudinary:', file.path);
     const response = await cloudinary.uploader.upload(file.path, {
         folder: 'gokcecotton',
     });
