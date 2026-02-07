@@ -12,10 +12,16 @@ export const createOrderSchema = Joi.object({
         country: Joi.string().required(),
     }).required(),
     contactNumber: Joi.string().required(),
-});
+    cardDetails: Joi.object({
+        cardHolderName: Joi.string().required(),
+        cardNumber: Joi.string().required(),
+        expireMonth: Joi.string().required(),
+        expireYear: Joi.string().required(),
+        cvc: Joi.string().required(),
+    }).optional(),
 
-export const updateOrderStatusSchema = Joi.object({
-    status: Joi.string()
-        .valid(...Object.values(ORDER_STATUS))
-        .required(),
-});
+    export const updateOrderStatusSchema = Joi.object({
+        status: Joi.string()
+            .valid(...Object.values(ORDER_STATUS))
+            .required(),
+    });

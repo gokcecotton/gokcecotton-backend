@@ -4,7 +4,7 @@ import createHttpError from 'http-errors';
 import { env } from '../utils/env.js';
 import { sendOrderSuccessEmails } from './mailService.js';
 
-export const startPaymentProcess = async (order, user, ip) => {
+export const processPayment = async (order, user, ip, cardDetails) => {
     const request = {
         locale: 'tr',
         conversationId: order._id.toString(),
@@ -13,17 +13,24 @@ export const startPaymentProcess = async (order, user, ip) => {
         currency: 'TRY',
         basketId: order._id.toString(),
         paymentGroup: 'PRODUCT',
-        callbackUrl: `${env('APP_URL')}/api/orders/callback`, // Needs to be configured in env
-        enabledInstallments: [1, 2, 3, 6, 9],
+        paymentChannel: 'WEB',
+        paymentCard: {
+            cardHolderName: cardDetails.cardHolderName,
+            cardNumber: cardDetails.cardNumber,
+            expireMonth: cardDetails.expireMonth,
+            expireYear: cardDetails.expireYear,
+            cvc: cardDetails.cvc,
+            registerCard: '0' // Kartı kaydetme
+        },
         buyer: {
             id: user._id.toString(),
             name: user.name,
-            surname: user.surname,
-            gsmNumber: order.contactNumber || '+905555555555',
+            surname: user.surname || user.name, // Fallback
+            gsmNumber: order.contactNumber || user.telephone || '+905555555555',
             email: user.email,
-            identityNumber: '11111111111', // Should be collected from user ideally
-            lastLoginDate: '2015-10-05 12:43:35',
-            registrationDate: '2013-04-21 15:12:09',
+            identityNumber: '11111111111', // Zorunlu alan, kullanıcıdan alınmalı aslında
+            lastLoginDate: '2024-01-01 10:00:00',
+            registrationDate: '2024-01-01 10:00:00',
             registrationAddress: order.address.street,
             ip: ip,
             city: order.address.city,
@@ -31,14 +38,14 @@ export const startPaymentProcess = async (order, user, ip) => {
             zipCode: order.address.zip,
         },
         shippingAddress: {
-            contactName: `${user.name} ${user.surname}`,
+            contactName: `${user.name}`,
             city: order.address.city,
             country: order.address.country,
             address: order.address.street,
             zipCode: order.address.zip,
         },
         billingAddress: {
-            contactName: `${user.name} ${user.surname}`,
+            contactName: `${user.name}`,
             city: order.address.city,
             country: order.address.country,
             address: order.address.street,
@@ -46,7 +53,7 @@ export const startPaymentProcess = async (order, user, ip) => {
         },
         basketItems: order.items.map((item) => ({
             id: item.productId.toString(),
-            name: 'Product', // Ideally fetch product name
+            name: 'Product', // Ürün adını buraya taşımak iyi olur
             category1: 'General',
             itemType: 'PHYSICAL',
             price: item.price.toFixed(2),
@@ -54,21 +61,25 @@ export const startPaymentProcess = async (order, user, ip) => {
     };
 
     return new Promise((resolve, reject) => {
-        iyzico.checkoutFormInitialize.create(request, async (err, result) => {
+        iyzico.payment.create(request, async (err, result) => {
             if (err) {
                 return reject(err);
             }
 
             if (result.status !== 'success') {
-                return reject(new Error(result.errorMessage));
+                return reject(new Error(result.errorMessage || 'Ödeme başarısız'));
             }
 
-            // Save the token to verified callback later
-            order.iyzicoToken = result.token;
-            order.ipAddress = ip;
+            // Ödeme başarılı
+            order.iyzicoPaymentId = result.paymentId;
+            order.status = 'Processing';
+            order.paymentStatus = 'Success';
             await order.save();
 
-            resolve(result.checkoutFormContent); // HTML Content
+            // Success e-postalarını gönder
+            sendOrderSuccessEmails(order._id);
+
+            resolve(result);
         });
     });
 };

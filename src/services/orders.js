@@ -70,16 +70,14 @@ export const createOrder = async (userId, payload) => {
         const user = await import('../db/models/user.js').then(m => m.UsersCollection.findById(userId));
         const ip = payload.ip || '127.0.0.1';
 
-        // Note: We need to pass populated items or names. 
-        // The current order.items only has IDs. 
-        // Let's populate manually or rely on service to fetch names (service uses simple 'Product' name for now).
-        const htmlContent = await startPaymentProcess(order, user, ip);
+        // Direct Payment with Card Details
+        const paymentResult = await import('./payment.js').then(m => m.processPayment(order, user, ip, payload.cardDetails));
 
         // Clear cart
         cart.items = [];
         await cart.save();
 
-        return { order, paymentHtml: htmlContent };
+        return { order, paymentResult };
     }
 
     // 7. Clear Cart (for non-CC)
