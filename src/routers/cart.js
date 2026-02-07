@@ -25,14 +25,15 @@ cartRouter.post(
     ctrlWrapper(addToCartController),
 );
 cartRouter.patch(
+    '/gift-wrap',
+    ctrlWrapper(updateCartGiftWrapController),
+);
+
+cartRouter.patch(
     '/:itemId',
     isValidId,
     validateBody(updateCartItemSchema),
     ctrlWrapper(updateCartItemController),
-);
-cartRouter.patch(
-    '/gift-wrap',
-    ctrlWrapper(updateCartGiftWrapController),
 );
 cartRouter.delete('/:itemId', isValidId, ctrlWrapper(removeCartItemController));
 cartRouter.delete('/', ctrlWrapper(clearCartController));
