@@ -19,9 +19,10 @@ export const createOrderSchema = Joi.object({
         expireYear: Joi.string().required(),
         cvc: Joi.string().required(),
     }).optional(),
+});
 
-    export const updateOrderStatusSchema = Joi.object({
-        status: Joi.string()
-            .valid(...Object.values(ORDER_STATUS))
-            .required(),
-    });
+export const updateOrderStatusSchema = Joi.object({
+    status: Joi.string()
+        .valid(...Object.values(ORDER_STATUS))
+        .required(),
+});
