@@ -12,6 +12,7 @@ export const createOrderSchema = Joi.object({
         country: Joi.string().required(),
     }).required(),
     contactNumber: Joi.string().required(),
+    isGiftWrap: Joi.boolean().optional(),
     cardDetails: Joi.object({
         cardHolderName: Joi.string().required(),
         cardNumber: Joi.string().required(),

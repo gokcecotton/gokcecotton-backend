@@ -47,6 +47,11 @@ export const createOrder = async (userId, payload) => {
         });
     }
 
+    // Add Gift Wrap Fee
+    if (payload.isGiftWrap) {
+        totalPrice += 50;
+    }
+
     // 4. Create Order
     const order = await OrdersCollection.create({
         userId,
@@ -55,13 +60,14 @@ export const createOrder = async (userId, payload) => {
         ...payload,
     });
 
-    // 5. Deduct Stock (Simple approach)
-    // In a real app, you might want to use transactions (startSession) for atomicity
-    for (const item of orderItems) {
-        await ProductsCollection.findByIdAndUpdate(item.productId, {
-            $inc: { stock: -item.quantity },
-        });
-    }
+    // Helper for stock deduction
+    const deductStock = async (items) => {
+        for (const item of items) {
+            await ProductsCollection.findByIdAndUpdate(item.productId, {
+                $inc: { stock: -item.quantity },
+            });
+        }
+    };
 
     // 6. Handle Payment Method
     if (payload.paymentMethod === PAYMENT_METHODS.CREDIT_CARD) {
@@ -70,16 +76,29 @@ export const createOrder = async (userId, payload) => {
         const ip = payload.ip || '127.0.0.1';
 
         // Direct Payment with Card Details
-        const paymentResult = await import('./payment.js').then(m => m.processPayment(order, user, ip, payload.cardDetails));
+        try {
+            const paymentResult = await import('./payment.js').then(m => m.processPayment(order, user, ip, payload.cardDetails));
 
-        // Clear cart
-        cart.items = [];
-        await cart.save();
+            // Payment Success: Deduct Stock
+            await deductStock(orderItems);
 
-        return { order, paymentResult };
+            // Clear cart
+            cart.items = [];
+            await cart.save();
+
+            return { order, paymentResult };
+        } catch (error) {
+            // Payment Failed: Do not deduct stock
+            // Optionally, we could update order status to 'PaymentFailed' or 'Cancelled' here
+            // or just let it stay as 'Pending' but not processed.
+            // For now, re-throw the error so the frontend knows it failed.
+            throw error;
+        }
     }
 
-    // 7. Clear Cart (for non-CC)
+    // 7. Clear Cart & Deduct Stock (for non-CC)
+    await deductStock(orderItems);
+
     cart.items = [];
     await cart.save();
 
