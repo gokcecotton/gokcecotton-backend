@@ -9,7 +9,6 @@ const validateBody = (schema) => async (req, res, next) => {
     });
     next();
   } catch (err) {
-    console.log('Validation Error Details:', JSON.stringify(err.details, null, 2));
     const error = createHttpError(400, 'Validation Error', {
       errors: err.details,
     });
