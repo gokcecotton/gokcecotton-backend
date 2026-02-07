@@ -8,6 +8,7 @@ import {
     getCartController,
     addToCartController,
     updateCartItemController,
+    updateCartGiftWrapController,
     removeCartItemController,
     clearCartController,
 } from '../controllers/cart.js';
@@ -28,6 +29,10 @@ cartRouter.patch(
     isValidId,
     validateBody(updateCartItemSchema),
     ctrlWrapper(updateCartItemController),
+);
+cartRouter.patch(
+    '/gift-wrap',
+    ctrlWrapper(updateCartGiftWrapController),
 );
 cartRouter.delete('/:itemId', isValidId, ctrlWrapper(removeCartItemController));
 cartRouter.delete('/', ctrlWrapper(clearCartController));

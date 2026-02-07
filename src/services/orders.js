@@ -48,7 +48,10 @@ export const createOrder = async (userId, payload) => {
     }
 
     // Add Gift Wrap Fee
-    if (payload.isGiftWrap) {
+    // Use cart's gift wrap status, or fallback to payload if not available (though it should be in cart)
+    const isGiftWrap = cart.isGiftWrap || payload.isGiftWrap || false;
+
+    if (isGiftWrap) {
         totalPrice += 50;
     }
 
@@ -57,6 +60,7 @@ export const createOrder = async (userId, payload) => {
         userId,
         items: orderItems,
         totalPrice,
+        isGiftWrap,
         ...payload,
     });
 

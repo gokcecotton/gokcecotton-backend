@@ -5,6 +5,7 @@ import {
     removeItemFromCart,
     clearCart,
     createCart,
+    updateGiftWrap,
 } from '../services/cart.js';
 
 export const getCartController = async (req, res) => {
@@ -45,6 +46,19 @@ export const updateCartItemController = async (req, res) => {
     res.json({
         status: 200,
         message: 'Cart item updated successfully',
+        data: cart,
+    });
+};
+
+export const updateCartGiftWrapController = async (req, res) => {
+    const userId = req.user._id;
+    const { isGiftWrap } = req.body;
+
+    const cart = await updateGiftWrap(userId, isGiftWrap);
+
+    res.json({
+        status: 200,
+        message: 'Cart gift wrap updated successfully',
         data: cart,
     });
 };

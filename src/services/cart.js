@@ -77,6 +77,16 @@ export const updateItemQuantity = async (userId, itemId, quantity) => {
     return await getCartByUserId(userId);
 };
 
+export const updateGiftWrap = async (userId, isGiftWrap) => {
+    const cart = await CartsCollection.findOne({ userId });
+    if (!cart) throw createHttpError(404, 'Cart not found');
+
+    cart.isGiftWrap = isGiftWrap;
+    await cart.save();
+
+    return await getCartByUserId(userId);
+};
+
 export const removeItemFromCart = async (userId, itemId) => {
     const cart = await CartsCollection.findOne({ userId });
     if (!cart) throw createHttpError(404, 'Cart not found');
@@ -92,6 +102,7 @@ export const clearCart = async (userId) => {
     if (!cart) throw createHttpError(404, 'Cart not found');
 
     cart.items = [];
+    cart.isGiftWrap = false; // Reset gift wrap
     await cart.save();
     return cart; // Returns empty cart
 };

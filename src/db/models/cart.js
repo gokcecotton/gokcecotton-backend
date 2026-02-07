@@ -16,6 +16,7 @@ const cartSchema = new Schema(
                 selectedAttributes: { type: Map, of: String }, // e.g., { "Size": "M", "Color": "Blue" }
             },
         ],
+        isGiftWrap: { type: Boolean, default: false },
     },
     { timestamps: true, versionKey: false },
 );
