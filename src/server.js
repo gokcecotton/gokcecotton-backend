@@ -37,7 +37,7 @@ export const startServer = () => {
   // CORS yapılandırması
   const allowedOrigins = [
     'http://localhost:5173',
-    'https://memoryorbs.app',
+    'https://gokcecotton.com',
   ];
 
   app.use(
