@@ -28,7 +28,7 @@ categoriesRouter.post(
 
 categoriesRouter.patch(
     '/:categoryId',
-    isValidId('categoryId'),
+    isValidId,
     authenticate,
     checkRoles('admin'),
     upload.single('image'),
@@ -38,7 +38,7 @@ categoriesRouter.patch(
 
 categoriesRouter.delete(
     '/:categoryId',
-    isValidId('categoryId'),
+    isValidId,
     authenticate,
     checkRoles('admin'),
     ctrlWrapper(deleteCategoryController),
