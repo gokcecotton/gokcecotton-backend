@@ -4,7 +4,7 @@ import { env } from './env.js';
 const iyzico = new Iyzipay({
     apiKey: env('IYZICO_API_KEY'),
     secretKey: env('IYZICO_SECRET_KEY'),
-    uri: env('IYZICO_BASE_URL', 'https://sandbox-api.iyzipay.com'),
+    uri: env('IYZICO_BASE_URL'),
 });
 
 export default iyzico;
